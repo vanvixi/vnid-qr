@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
+
 import '../../models/cccd_model.dart';
 import '../../utils/qr_generator.dart';
 
@@ -35,7 +36,6 @@ class _QRDisplayWidgetState extends State<QRDisplayWidget>
   @override
   void didUpdateWidget(QRDisplayWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Regenerate QR code when model changes
     if (widget.cccdModel != oldWidget.cccdModel) {
       _animationController.reset();
       _generateQRCode();
@@ -58,18 +58,18 @@ class _QRDisplayWidgetState extends State<QRDisplayWidget>
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const .all(24),
+      padding: const .all(16),
       child: Column(
         children: [
+          const SizedBox(height: 16),
           AnimatedBuilder(
             animation: _scaleAnimation,
             builder: (context, child) {
               return Transform.scale(
                 scale: _scaleAnimation.value,
                 child: Container(
-                  width: 280,
-                  height: 280,
-                  padding: const .all(16),
+                  width: 240,
+                  height: 240,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: .circular(16),
@@ -91,7 +91,7 @@ class _QRDisplayWidgetState extends State<QRDisplayWidget>
               );
             },
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
           Card(
             child: Padding(
               padding: const .all(16),
@@ -103,17 +103,34 @@ class _QRDisplayWidgetState extends State<QRDisplayWidget>
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const Divider(height: 24),
-                  _buildInfoRow('Số CCCD:', widget.cccdModel.soCCCD),
+                  _buildInfoRow('Số CCCD', widget.cccdModel.soCCCD),
                   if (widget.cccdModel.soCMND != null)
-                    _buildInfoRow('Số CMND cũ:', widget.cccdModel.soCMND!),
-                  _buildInfoRow('Họ và tên:', widget.cccdModel.hoVaTen),
-                  _buildInfoRow(
-                    'Giới tính:',
-                    widget.cccdModel.gioiTinh.displayName,
+                    _buildInfoRow('Số CMND cũ', widget.cccdModel.soCMND!),
+                  _buildInfoRow('Họ và tên', widget.cccdModel.hoVaTen),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildInfoRow(
+                          'Giới tính',
+                          widget.cccdModel.gioiTinh.displayName,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _buildInfoRow(
+                          'Ngày sinh',
+                          _formatDate(widget.cccdModel.ngaySinh),
+                        ),
+                      ),
+                    ],
                   ),
                   _buildInfoRow(
-                    'Nơi thường trú:',
+                    'Nơi thường trú',
                     widget.cccdModel.noiThuongTru,
+                  ),
+                  _buildInfoRow(
+                    'Ngày cấp CCCD',
+                    _formatDate(widget.cccdModel.ngayCapCCCD),
                   ),
                 ],
               ),
@@ -124,20 +141,26 @@ class _QRDisplayWidgetState extends State<QRDisplayWidget>
     );
   }
 
+  String _formatDate(DateTime date) {
+    String day = date.day.toString().padLeft(2, '0');
+    String month = date.month.toString().padLeft(2, '0');
+    return '$day/$month/${date.year}';
+  }
+
   Widget _buildInfoRow(String label, String value) {
     return Padding(
       padding: const .only(bottom: 8),
-      child: Row(
+      child: Column(
+        mainAxisSize: .min,
         crossAxisAlignment: .start,
         children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              label,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+          Text(label, style: Theme.of(context).textTheme.labelMedium),
+          Text(
+            value,
+            style: Theme.of(
+              context,
+            ).textTheme.labelLarge?.copyWith(fontWeight: .w600),
           ),
-          Expanded(child: Text(value)),
         ],
       ),
     );
