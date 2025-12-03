@@ -1,11 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import '../models/cccd_model.dart';
 import '../models/gender.dart';
 import '../utils/date_input_formatter.dart';
 import '../utils/validators.dart';
+import 'widgets/gender_dropdown_form_field.dart';
 import 'widgets/qr_display_widget.dart';
+import 'widgets/string_input_form_field.dart';
 
 class QrFormScreen extends StatefulWidget {
   const QrFormScreen({super.key});
@@ -45,7 +47,7 @@ class _QrFormScreenState extends State<QrFormScreen> {
   void _updateQRCode() {
     final cccdModel = CCCDModel(
       soCCCD: _soCCCD,
-      soCMND: _soCMND?.isEmpty == true ? null : _soCMND,
+      soCMND: _soCMND,
       hoVaTen: _hoVaTen,
       ngaySinh: Validators.parseDate(_ngaySinh),
       gioiTinh: _gioiTinh,
@@ -143,13 +145,10 @@ class _QrFormScreenState extends State<QrFormScreen> {
       child: ListView(
         padding: const .all(16),
         children: [
-          TextFormField(
+          StringInputFormField(
             initialValue: _soCCCD,
-            decoration: const InputDecoration(
-              labelText: 'Số CCCD *',
-              hintText: '001085008171',
-              border: OutlineInputBorder(),
-            ),
+            labelText: 'Số CCCD *',
+            hintText: '001085008171',
             keyboardType: TextInputType.number,
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
@@ -159,13 +158,10 @@ class _QrFormScreenState extends State<QrFormScreen> {
             onSaved: (value) => _soCCCD = value?.trim() ?? '',
           ),
           const SizedBox(height: 16),
-          TextFormField(
+          StringInputFormField(
             initialValue: _soCMND,
-            decoration: const InputDecoration(
-              labelText: 'Số CMND cũ',
-              hintText: '112140305 (không bắt buộc)',
-              border: OutlineInputBorder(),
-            ),
+            labelText: 'Số CMND cũ',
+            hintText: '112140305 (không bắt buộc)',
             keyboardType: TextInputType.number,
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
@@ -175,25 +171,19 @@ class _QrFormScreenState extends State<QrFormScreen> {
             onSaved: (value) => _soCMND = value?.trim(),
           ),
           const SizedBox(height: 16),
-          TextFormField(
+          StringInputFormField(
             initialValue: _hoVaTen,
-            decoration: const InputDecoration(
-              labelText: 'Họ và tên *',
-              hintText: 'Nguyễn Văn A',
-              border: OutlineInputBorder(),
-            ),
+            labelText: 'Họ và tên *',
+            hintText: 'Nguyễn Văn A',
             textCapitalization: TextCapitalization.words,
             validator: Validators.validateHoTen,
             onSaved: (value) => _hoVaTen = value?.trim() ?? '',
           ),
           const SizedBox(height: 16),
-          TextFormField(
+          StringInputFormField(
             initialValue: _ngaySinh,
-            decoration: const InputDecoration(
-              labelText: 'Ngày sinh *',
-              hintText: 'dd/MM/yyyy',
-              border: OutlineInputBorder(),
-            ),
+            labelText: 'Ngày sinh *',
+            hintText: 'dd/MM/yyyy',
             keyboardType: TextInputType.number,
             inputFormatters: [DateInputFormatter()],
             validator: (value) =>
@@ -201,56 +191,50 @@ class _QrFormScreenState extends State<QrFormScreen> {
             onSaved: (value) => _ngaySinh = value ?? '',
           ),
           const SizedBox(height: 16),
-          DropdownButtonFormField<Gender>(
+          GenderDropdownFormField(
             initialValue: _gioiTinh,
-            decoration: const InputDecoration(
-              labelText: 'Giới tính *',
-              border: OutlineInputBorder(),
-            ),
-            items: Gender.values.map((gender) {
-              return DropdownMenuItem(
-                value: gender,
-                child: Text(gender.displayName),
-              );
-            }).toList(),
-            onChanged: (value) {
-              if (value == null) return;
-              _gioiTinh = value;
-            },
             onSaved: (value) => _gioiTinh = value ?? Gender.nam,
           ),
           const SizedBox(height: 16),
-          TextFormField(
+          StringInputFormField(
             initialValue: _noiThuongTru,
-            decoration: const InputDecoration(
-              labelText: 'Nơi thường trú *',
-              hintText: 'Thôn Hàn, Sơn Đồng, Hoài Đức, Hà Nội',
-              border: OutlineInputBorder(),
-            ),
+            labelText: 'Nơi thường trú *',
+            hintText: 'Thôn Hàn, Sơn Đồng, Hoài Đức, Hà Nội',
             maxLines: 2,
             textCapitalization: TextCapitalization.words,
             validator: Validators.validateAddress,
             onSaved: (value) => _noiThuongTru = value?.trim() ?? '',
           ),
           const SizedBox(height: 16),
-          TextFormField(
+          StringInputFormField(
             initialValue: _ngayCap,
-            decoration: const InputDecoration(
-              labelText: 'Ngày cấp CCCD *',
-              hintText: 'dd/MM/yyyy',
-              border: OutlineInputBorder(),
-            ),
+            labelText: 'Ngày cấp CCCD *',
+            hintText: 'dd/MM/yyyy',
             keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.done,
             inputFormatters: [DateInputFormatter()],
             validator: (value) =>
                 Validators.validateDate(value, fieldName: 'Ngày cấp'),
             onSaved: (value) => _ngayCap = value ?? '',
           ),
           const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: _submitForm,
-            style: ElevatedButton.styleFrom(padding: const .all(16)),
-            child: const Text('Tạo QR Code', style: TextStyle(fontSize: 16)),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: _submitForm,
+                  style: ElevatedButton.styleFrom(padding: const .all(16)),
+                  child: const Text(
+                    'Tạo QR Code',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ),
+              IconButton.filled(
+                onPressed: () => {},
+                icon: Icon(Icons.backspace_rounded),
+              ),
+            ],
           ),
         ],
       ),
