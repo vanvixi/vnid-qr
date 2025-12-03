@@ -44,23 +44,24 @@ class _MyFormState extends State<MyForm> {
       },
       child: Form(
         key: _formKey,
+        autovalidateMode: .onUnfocus,
         child: SingleChildScrollView(
           padding: const .all(16),
           child: Column(
             spacing: 16,
             children: [
               ...widget.children,
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
               Row(
                 spacing: 12,
                 children: [
                   Expanded(
                     child: ElevatedButton(
                       onPressed: _handleSubmit,
-                      style: ElevatedButton.styleFrom(padding: const .all(16)),
+                      style: ElevatedButton.styleFrom(fixedSize: Size.fromHeight(56)),
                       child: const Text(
                         'Tạo QR Code',
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 16, fontWeight: .bold),
                       ),
                     ),
                   ),
