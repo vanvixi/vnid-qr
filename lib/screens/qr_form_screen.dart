@@ -8,6 +8,7 @@ import '../utils/validators.dart';
 import 'widgets/gender_dropdown_form_field.dart';
 import 'widgets/my_form.dart';
 import 'widgets/qr_display_widget.dart';
+import 'widgets/scaffold_responsive.dart';
 import 'widgets/string_input_form_field.dart';
 
 class QrFormScreen extends StatefulWidget {
@@ -79,34 +80,22 @@ class _QrFormScreenState extends State<QrFormScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ScaffoldResponsive(
       appBar: AppBar(title: const Text('Tạo QR Code CCCD')),
-      body: Align(
-        alignment: .topCenter,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1024),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              isDesktop = constraints.maxWidth >= 720;
-
-              if (isDesktop) {
-                // Desktop/Tablet: Row layout
-                return Row(
-                  crossAxisAlignment: .start,
-                  children: [
-                    // Form bên trái
-                    Flexible(flex: 2, child: _buildFormArea()),
-                    // QR bên phải - using ValueListenableBuilder
-                    Flexible(flex: 3, child: _buildQrArea()),
-                  ],
-                );
-              } else {
-                return _buildFormArea();
-              }
-            },
-          ),
-        ),
-      ),
+      mobileBuilder: (context) {
+        isDesktop = false;
+        return _buildFormArea();
+      },
+      tabletBuilder: (context) {
+        isDesktop = true;
+        return Row(
+          crossAxisAlignment: .start,
+          children: [
+            Flexible(flex: 2, child: _buildFormArea()),
+            Flexible(flex: 3, child: _buildQrArea()),
+          ],
+        );
+      },
     );
   }
 
