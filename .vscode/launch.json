@@ -6,18 +6,18 @@
     "configurations": [
         
         {
-            "name": "vn_id_simple_qr",
+            "name": "vnid_qr",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "vn_id_simple_qr (profile mode)",
+            "name": "vnid_qr (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "vn_id_simple_qr (release mode)",
+            "name": "vnid_qr (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
