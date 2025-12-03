@@ -6,6 +6,7 @@ import '../models/gender.dart';
 import '../utils/date_input_formatter.dart';
 import '../utils/validators.dart';
 import 'widgets/gender_dropdown_form_field.dart';
+import 'widgets/my_form.dart';
 import 'widgets/qr_display_widget.dart';
 import 'widgets/string_input_form_field.dart';
 
@@ -18,7 +19,6 @@ class QrFormScreen extends StatefulWidget {
 
 class _QrFormScreenState extends State<QrFormScreen> {
   bool isDesktop = false;
-  final _formKey = GlobalKey<FormState>();
 
   // Form values
   String _soCCCD = '';
@@ -38,13 +38,6 @@ class _QrFormScreenState extends State<QrFormScreen> {
   }
 
   void _handleSubmit() {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      _updateQRCode();
-    }
-  }
-
-  void _updateQRCode() {
     final cccdModel = CCCDModel(
       soCCCD: _soCCCD,
       soCMND: _soCMND,
@@ -81,7 +74,6 @@ class _QrFormScreenState extends State<QrFormScreen> {
   }
 
   void _handleReset() {
-    _formKey.currentState?.reset();
     _cccdModelNotifier.value = null;
   }
 
@@ -144,107 +136,77 @@ class _QrFormScreenState extends State<QrFormScreen> {
   }
 
   Widget _buildFormArea() {
-    return Form(
-      key: _formKey,
-      autovalidateMode: .onUnfocus,
-      child: ListView(
-        padding: const .all(16),
-        children: [
-          StringInputFormField(
-            initialValue: _soCCCD,
-            labelText: 'Số CCCD *',
-            hintText: '001085008171',
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(12),
-            ],
-            validator: Validators.validateSoCCCD,
-            onSaved: (value) => _soCCCD = value?.trim() ?? '',
-          ),
-          const SizedBox(height: 16),
-          StringInputFormField(
-            initialValue: _soCMND,
-            labelText: 'Số CMND cũ',
-            hintText: '112140305 (không bắt buộc)',
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(12),
-            ],
-            validator: Validators.validateSoCMND,
-            onSaved: (value) => _soCMND = value?.trim(),
-          ),
-          const SizedBox(height: 16),
-          StringInputFormField(
-            initialValue: _hoVaTen,
-            labelText: 'Họ và tên *',
-            hintText: 'Nguyễn Văn A',
-            textCapitalization: TextCapitalization.words,
-            validator: Validators.validateHoTen,
-            onSaved: (value) => _hoVaTen = value?.trim() ?? '',
-          ),
-          const SizedBox(height: 16),
-          StringInputFormField(
-            initialValue: _ngaySinh,
-            labelText: 'Ngày sinh *',
-            hintText: 'dd/MM/yyyy',
-            keyboardType: TextInputType.number,
-            inputFormatters: [DateInputFormatter()],
-            validator: (value) =>
-                Validators.validateDate(value, fieldName: 'Ngày sinh'),
-            onSaved: (value) => _ngaySinh = value ?? '',
-          ),
-          const SizedBox(height: 16),
-          GenderDropdownFormField(
-            initialValue: _gioiTinh,
-            onSaved: (value) => _gioiTinh = value ?? Gender.nam,
-          ),
-          const SizedBox(height: 16),
-          StringInputFormField(
-            initialValue: _noiThuongTru,
-            labelText: 'Nơi thường trú *',
-            hintText: 'Thôn Hàn, Sơn Đồng, Hoài Đức, Hà Nội',
-            maxLines: 2,
-            textCapitalization: TextCapitalization.words,
-            validator: Validators.validateAddress,
-            onSaved: (value) => _noiThuongTru = value?.trim() ?? '',
-          ),
-          const SizedBox(height: 16),
-          StringInputFormField(
-            initialValue: _ngayCap,
-            labelText: 'Ngày cấp CCCD *',
-            hintText: 'dd/MM/yyyy',
-            keyboardType: TextInputType.number,
-            textInputAction: TextInputAction.done,
-            inputFormatters: [DateInputFormatter()],
-            validator: (value) =>
-                Validators.validateDate(value, fieldName: 'Ngày cấp'),
-            onSaved: (value) => _ngayCap = value ?? '',
-          ),
-          const SizedBox(height: 24),
-          Row(
-            spacing: 16,
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: _handleSubmit,
-                  style: ElevatedButton.styleFrom(padding: const .all(16)),
-                  child: const Text(
-                    'Tạo QR Code',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ),
-              IconButton.filled(
-                onPressed: _handleReset,
-                padding: const .all(16),
-                icon: Icon(Icons.backspace_rounded),
-              ),
-            ],
-          ),
-        ],
-      ),
+    return MyForm(
+      onReset: _handleReset,
+      onSubmit: _handleSubmit,
+      children: [
+        StringInputFormField(
+          initialValue: _soCCCD,
+          labelText: 'Số CCCD *',
+          hintText: '001085008171',
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(12),
+          ],
+          validator: Validators.validateSoCCCD,
+          onSaved: (value) => _soCCCD = value?.trim() ?? '',
+        ),
+        StringInputFormField(
+          initialValue: _soCMND,
+          labelText: 'Số CMND cũ',
+          hintText: '112140305 (không bắt buộc)',
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(12),
+          ],
+          validator: Validators.validateSoCMND,
+          onSaved: (value) => _soCMND = value?.trim(),
+        ),
+        StringInputFormField(
+          initialValue: _hoVaTen,
+          labelText: 'Họ và tên *',
+          hintText: 'Nguyễn Văn A',
+          textCapitalization: TextCapitalization.words,
+          validator: Validators.validateHoTen,
+          onSaved: (value) => _hoVaTen = value?.trim() ?? '',
+        ),
+        StringInputFormField(
+          initialValue: _ngaySinh,
+          labelText: 'Ngày sinh *',
+          hintText: 'dd/MM/yyyy',
+          keyboardType: TextInputType.number,
+          inputFormatters: [DateInputFormatter()],
+          validator: (value) =>
+              Validators.validateDate(value, fieldName: 'Ngày sinh'),
+          onSaved: (value) => _ngaySinh = value ?? '',
+        ),
+        GenderDropdownFormField(
+          initialValue: _gioiTinh,
+          onSaved: (value) => _gioiTinh = value ?? Gender.nam,
+        ),
+        StringInputFormField(
+          initialValue: _noiThuongTru,
+          labelText: 'Nơi thường trú *',
+          hintText: 'Thôn Hàn, Sơn Đồng, Hoài Đức, Hà Nội',
+          maxLines: 2,
+          textCapitalization: TextCapitalization.words,
+          validator: Validators.validateAddress,
+          onSaved: (value) => _noiThuongTru = value?.trim() ?? '',
+        ),
+        StringInputFormField(
+          initialValue: _ngayCap,
+          labelText: 'Ngày cấp CCCD *',
+          hintText: 'dd/MM/yyyy',
+          keyboardType: TextInputType.number,
+          textInputAction: TextInputAction.done,
+          inputFormatters: [DateInputFormatter()],
+          validator: (value) =>
+              Validators.validateDate(value, fieldName: 'Ngày cấp'),
+          onSaved: (value) => _ngayCap = value ?? '',
+        ),
+      ],
     );
   }
 }
