@@ -37,7 +37,7 @@ class _QrFormScreenState extends State<QrFormScreen> {
     super.dispose();
   }
 
-  void _submitForm() {
+  void _handleSubmit() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       _updateQRCode();
@@ -78,6 +78,11 @@ class _QrFormScreenState extends State<QrFormScreen> {
         );
       },
     );
+  }
+
+  void _handleReset() {
+    _formKey.currentState?.reset();
+    _cccdModelNotifier.value = null;
   }
 
   @override
@@ -219,10 +224,11 @@ class _QrFormScreenState extends State<QrFormScreen> {
           ),
           const SizedBox(height: 24),
           Row(
+            spacing: 16,
             children: [
               Expanded(
                 child: ElevatedButton(
-                  onPressed: _submitForm,
+                  onPressed: _handleSubmit,
                   style: ElevatedButton.styleFrom(padding: const .all(16)),
                   child: const Text(
                     'Tạo QR Code',
@@ -231,7 +237,8 @@ class _QrFormScreenState extends State<QrFormScreen> {
                 ),
               ),
               IconButton.filled(
-                onPressed: () => {},
+                onPressed: _handleReset,
+                padding: const .all(16),
                 icon: Icon(Icons.backspace_rounded),
               ),
             ],
