@@ -19,7 +19,7 @@ class CCCDModel {
     required this.ngayCapCCCD,
   });
 
-  String toQRString() {
+  String toQRPayload() {
     final ngaySinhStr = _formatDate(ngaySinh);
     final ngayCapStr = _formatDate(ngayCapCCCD);
 

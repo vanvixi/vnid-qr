@@ -49,7 +49,7 @@ class _QRDisplayWidgetState extends State<QRDisplayWidget>
   }
 
   void _generateQRCode() {
-    final qrString = widget.cccdModel.toQRString();
+    final qrString = widget.cccdModel.toQRPayload();
     final qrCode = QRGenerator.generate(qrString);
     _qrImage = QRGenerator.createImage(qrCode);
     _animationController.forward();
