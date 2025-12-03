@@ -119,7 +119,7 @@ class _QrFormScreenState extends State<QrFormScreen> {
             child: Column(
               mainAxisAlignment: .start,
               children: [
-                Icon(Icons.qr_code_rounded, size: 100, color: Colors.grey[300]),
+                Icon(Icons.qr_code_rounded, size: 240, color: Colors.grey[300]),
                 const SizedBox(height: 16),
                 Text(
                   'Nhập thông tin và nhấn "Tạo QR Code"',
