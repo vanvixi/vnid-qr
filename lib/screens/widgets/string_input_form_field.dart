@@ -34,6 +34,7 @@ class StringInputFormField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,
+        hintStyle: TextStyle(color: Colors.grey[400]),
         border: OutlineInputBorder(),
       ),
       minLines: 1,
