@@ -23,7 +23,7 @@ class GenderDropdownFormField extends StatelessWidget {
         );
       }).toList(),
       onChanged: (v) => {},
-      onSaved: (value) => onSaved,
+      onSaved: onSaved,
     );
   }
 }
